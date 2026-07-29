@@ -8,4 +8,9 @@ import lombok.Data;
 public class ModelId {
         private String name;
         private String ModelId;
+
+        public ModelId(String modelId) {
+                ModelId = modelId;
+                name = modelId;
+        }
 }

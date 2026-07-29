@@ -13,6 +13,7 @@ public class SessionInfo {
         private String workDir;
         private String name;
         private long createTime;
+        private long updateTime;
         private ModelChoice modelChoice;
 
 }

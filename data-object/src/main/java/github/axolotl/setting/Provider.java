@@ -1,4 +1,4 @@
-package github.axolotl.config;
+package github.axolotl.setting;
 
 import java.util.List;
 

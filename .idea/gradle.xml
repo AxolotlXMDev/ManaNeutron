@@ -15,10 +15,6 @@
         </option>
         <option name="myGradleHome" value="C:\Program Files\gradle-9.3.0" />
       </GradleProjectSettings>
-      <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/backend" />
-        <option name="myGradleHome" value="C:\Program Files\gradle-9.3.0" />
-      </GradleProjectSettings>
     </option>
   </component>
 </project>

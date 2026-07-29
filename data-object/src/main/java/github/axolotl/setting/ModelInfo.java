@@ -1,4 +1,4 @@
-package github.axolotl.config;
+package github.axolotl.setting;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

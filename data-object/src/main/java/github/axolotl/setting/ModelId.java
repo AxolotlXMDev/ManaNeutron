@@ -1,4 +1,4 @@
-package github.axolotl.config;
+package github.axolotl.setting;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +8,4 @@ import lombok.Data;
 public class ModelId {
         private String name;
         private String ModelId;
-
-
 }

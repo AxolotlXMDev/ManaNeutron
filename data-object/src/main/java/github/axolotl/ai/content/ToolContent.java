@@ -1,4 +1,4 @@
-package github.axolotl.ai;
+package github.axolotl.ai.content;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

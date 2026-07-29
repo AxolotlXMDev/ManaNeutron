@@ -14,8 +14,16 @@ java {
     }
 }
 
+tasks.named<JavaExec>("bootRun") {
+    workingDir = rootProject.file("test/${project.name}")
+    doFirst {
+        if (!workingDir.exists()) workingDir.mkdirs()
+    }
+}
+
 repositories {
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -24,8 +32,13 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(project(":data-object"))
+    implementation("com.github.42784:EasyUtil:-SNAPSHOT")
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.61")
+
 }
 
 tasks.test {
     useJUnitPlatform()
+    workingDir = rootProject.file("test/$name")
 }

@@ -1,3 +1,18 @@
 spring:
   application:
     name: backend
+  mvc:
+    apiversion:
+      use:
+        header: Api-Version
+      default: 1.0
+server:
+  port: 8088
+
+mana-neutron:
+  config:
+    setting-path: "./config/setting.json"
+    prompt-template-config-path: "./config/prompt-template-config.json"
+    token-config-path: "./config/token.txt"
+    session-path: "./session"
+    session-cache-path: "./session/session.json"

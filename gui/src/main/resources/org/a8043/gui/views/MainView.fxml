@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<TabPane fx:id="pane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+         minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/24.0.1"
+         xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.a8043.gui.views.MainView">
+    <tabs>
+        <Tab closable="false" text="%main.mainTab">
+            <content>
+                <VBox alignment="TOP_CENTER">
+                    <children>
+                        <HBox alignment="CENTER" spacing="2.0">
+                            <children>
+                                <Button mnemonicParsing="false" onAction="#newSession" text="%main.newSession"/>
+                                <Label alignment="CENTER" contentDisplay="CENTER" text="🔍">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <TextField maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                           onInputMethodTextChanged="#search" fx:id="searchField"/>
+                            </children>
+                        </HBox>
+                        <TreeView fx:id="sessionsTree" onMouseClicked="#openSession"/>
+                    </children>
+                </VBox>
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      spacing="10.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.a8043.gui.views.LoginView">
+    <children>
+        <Label text="%login.title">
+            <font>
+                <Font size="20.0"/>
+            </font>
+        </Label>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <TextField fx:id="ipField" GridPane.columnIndex="1"/>
+                <PasswordField fx:id="tokenField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Label text="%login.token" GridPane.rowIndex="1"/>
+                <Label text="%login.ip"/>
+            </children>
+        </GridPane>
+        <Button mnemonicParsing="false" onAction="#login" text="%login.login" fx:id="loginButton"/>
+        <Label styleClass="recentlyLogin-label" text="%login.recentlyLogin"/>
+        <ListView fx:id="recentlyLoginList" prefHeight="100.0"/>
+    </children>
+</VBox>

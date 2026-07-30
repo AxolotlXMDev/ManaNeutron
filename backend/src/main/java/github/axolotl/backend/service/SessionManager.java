@@ -1,6 +1,7 @@
 package github.axolotl.backend.service;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
 import dczx.axolotl.util.file.FilesUtil;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
@@ -38,14 +39,14 @@ public class SessionManager {
                 FilesUtil.keepFileExists(sessionCachePath);
                 String text = Files.readString(Path.of(sessionCachePath));
                 sessionInfos = JSONObject.parseObject(text, SessionInfos.class);
-                if (sessionInfos == null||sessionInfos.getSessionInfos() == null) {
+                if (sessionInfos == null || sessionInfos.getSessionInfos() == null) {
                         sessionInfos = new SessionInfos(new ArrayList<>());
                 }
         }
 
-        public void loadSession(String sessionId) throws IOException {
+        public Session loadSession(String sessionId) throws IOException {
                 String text = Files.readString(getSessionFilePath(sessionId));
-                updateSession(JSONObject.parseObject(text, Session.class));
+                return updateSession(JSONObject.parseObject(text, Session.class));
         }
 
         private @NonNull Path getSessionFilePath(String sessionId) {
@@ -53,14 +54,12 @@ public class SessionManager {
         }
 
         /**
-         *  在"Session初始化、用户发送消息、AI回复"时保存一次
-         * @param session
-         * @throws IOException
+         * 在"Session初始化、用户发送消息、AI回复"时保存一次
          */
         public void saveSession(Session session) throws IOException {
                 Files.writeString(
                         getSessionFilePath(session.getId()),
-                        JSONObject.toJSONString(session)
+                        JSONObject.toJSONString(session, JSONWriter.Feature.WriteClassName)
                 );
         }
 
@@ -69,13 +68,14 @@ public class SessionManager {
                 saveSession(session);
         }
 
-        public void updateSession(Session session) {
+        public Session updateSession(Session session) {
                 String sessionId = session.getInfo().getId();
                 if (!loadedSession.containsKey(sessionId)) {
                         sessionInfos.addSessionInfo(session);
                 }
                 loadedSession.put(sessionId, session);
                 sessionInfos.updateSessionInfo(session.getInfo());
+                return session;
         }
 
         public Session getSession(String sessionId) {

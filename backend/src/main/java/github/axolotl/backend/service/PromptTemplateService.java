@@ -24,6 +24,8 @@ import java.util.Map;
 public class PromptTemplateService {
         @Value("${mana-neutron.config.prompt-template-config-path}")
         private String templateConfigPath;
+        @Value("${mana-neutron.config.default-prompt-path}")
+        private String defaultPromptPath;
         private List<PromptTemplate> templates;
 
         @PostConstruct
@@ -33,7 +35,6 @@ public class PromptTemplateService {
                 PromptTemplateConfigEntries entries =
                         JSONObject.parseObject(text, PromptTemplateConfigEntries.class);
                 if (entries == null || entries.getEntries().isEmpty()) {
-                        final String defaultPromptPath = "./prompt_template/init.txt";
                         PromptTemplateConfigEntry entry = new PromptTemplateConfigEntry(1, PromptTemplateType.INIT, defaultPromptPath);
                         entries = new PromptTemplateConfigEntries(List.of(entry));
                         FilesUtil.keepFileExists(defaultPromptPath);

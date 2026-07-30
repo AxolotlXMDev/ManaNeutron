@@ -21,6 +21,19 @@ tasks.named<JavaExec>("bootRun") {
     }
 }
 
+tasks.test {
+    useJUnitPlatform()
+    workingDir = rootProject.file("test/junit-${project.name}")
+    doFirst {
+        workingDir.deleteRecursively()
+        if (!workingDir.exists()) workingDir.mkdirs()
+        val tokenFile = workingDir.resolve("config/token.txt")
+        if (!tokenFile.exists()) {
+            tokenFile.parentFile.mkdirs()
+            tokenFile.writeText("test-token")
+        }
+    }
+}
 repositories {
     mavenCentral()
     maven { url = uri("https://jitpack.io") }

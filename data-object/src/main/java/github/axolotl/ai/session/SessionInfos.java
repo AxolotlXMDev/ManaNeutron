@@ -2,11 +2,13 @@ package github.axolotl.ai.session;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class SessionInfos {
         private List<SessionInfo> sessionInfos;
 

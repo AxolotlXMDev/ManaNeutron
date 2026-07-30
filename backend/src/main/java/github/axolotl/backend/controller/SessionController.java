@@ -4,8 +4,10 @@ import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
 import github.axolotl.backend.service.SessionService;
-import github.axolotl.backend.service.SettingsService;
 import github.axolotl.setting.ModelChoice;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,14 +25,23 @@ public class SessionController {
                 return sessionService.getSessionInfos();
         }
 
+        @Data
+        @AllArgsConstructor
+        @NoArgsConstructor
+        public static class CreateSessionRequest {
+                private String name;
+                private String workDir;
+                private ModelChoice modelChoice;
+        }
+
         @PostMapping("/newSession")
-        public Session newSession(@RequestBody String workDir, @RequestBody ModelChoice modelChoice) throws IOException {
+        public Session newSession(@RequestBody CreateSessionRequest createSessionRequest) throws IOException {
                 SessionInfo sessionInfo = SessionInfo.builder()
-                        .workDir(workDir)
+                        .workDir(createSessionRequest.workDir)
                         .createTime(System.currentTimeMillis())
                         .updateTime(System.currentTimeMillis())
-                        .modelChoice(modelChoice)
-                        .name("New Session")
+                        .modelChoice(createSessionRequest.modelChoice)
+                        .name(createSessionRequest.name)
                         .id(UUID.randomUUID().toString())
                         .build();
                 return sessionService.createSession(sessionInfo);

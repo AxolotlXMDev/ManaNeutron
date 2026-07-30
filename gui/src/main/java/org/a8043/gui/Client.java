@@ -1,9 +1,6 @@
 package org.a8043.gui;
 
-import com.dtflys.forest.annotation.BaseRequest;
-import com.dtflys.forest.annotation.Body;
-import com.dtflys.forest.annotation.Get;
-import com.dtflys.forest.annotation.Post;
+import com.dtflys.forest.annotation.*;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
@@ -34,4 +31,13 @@ public interface Client {
         Session newSession(@Body("name") String name,
                            @Body("workDir") String workDir,
                            @Body("modelChoice") ModelChoice modelChoice);
+
+        @Post("/sessions/editContent")
+        Session editContent(@Body("`sessionId") String sessionId,
+                            @Body("contentIndex") int contentIndex,
+                            @Body("content") String content);
+
+        @Post("/sessions/sendUserMessage")
+        Session sendUserMessage(@Query("sessionId") String sessionId,
+                                @Query("content") String content);
 }

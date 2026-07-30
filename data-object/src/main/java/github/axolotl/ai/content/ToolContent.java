@@ -1,10 +1,12 @@
 package github.axolotl.ai.content;
 
+import com.alibaba.fastjson2.annotation.JSONType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@JSONType(typeName = "tool")
 public class ToolContent extends Content {
         private String id;
         private boolean isSuccess;

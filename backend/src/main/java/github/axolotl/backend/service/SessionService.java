@@ -1,6 +1,7 @@
 package github.axolotl.backend.service;
 
 import github.axolotl.ai.content.Content;
+import github.axolotl.ai.content.UserContent;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
@@ -12,6 +13,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 用于组合其他Service，向上提供给Controller
+ * 简单方法请直接调用SessionManager
+ */
 @Service
 public class SessionService {
         @Autowired
@@ -42,5 +47,10 @@ public class SessionService {
                 }
                 sessionInfoList.sort((a, b) -> Long.compare(b.getUpdateTime(), a.getUpdateTime()));
                 return sessionInfoList.getFirst();
+        }
+
+        public void sendUserMessage(Session session, String content) throws IOException {
+                session.getContents().add(new UserContent(content));//TODO 真实的消息发送和AI调用
+                sessionManager.updateAndSaveSession(session);
         }
 }

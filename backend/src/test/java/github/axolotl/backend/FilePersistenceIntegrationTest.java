@@ -7,14 +7,11 @@ import github.axolotl.backend.entity.template.PromptTemplateType;
 import github.axolotl.backend.service.PromptTemplateService;
 import github.axolotl.backend.service.SessionManager;
 import github.axolotl.backend.service.SettingsService;
-import lombok.NoArgsConstructor;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +60,7 @@ class FilePersistenceIntegrationTest {
 
                 Path sessionFile = Path.of(sessionPath).resolve(sessionId + ".json");
                 assertTrue(Files.exists(sessionFile));
-                assertEquals(sessionId, sessionManager.getSession(sessionId).getId());
+                assertEquals(sessionId, sessionManager.getSessionById(sessionId).getId());
                 System.out.println("Inspectable test data: " + sessionFile.toAbsolutePath());
         }
 

@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import dczx.axolotl.util.file.FilesUtil;
 import github.axolotl.ai.session.Session;
-import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -17,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * 此类负责与本地文件的session交互、提供方法供SessionService使用
@@ -78,7 +76,7 @@ public class SessionManager {
                 return session;
         }
 
-        public Session getSession(String sessionId) {
+        public Session getSessionById(String sessionId) {
                 return loadedSession.get(sessionId);
         }
 

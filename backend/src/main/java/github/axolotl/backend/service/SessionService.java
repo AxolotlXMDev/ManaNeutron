@@ -37,6 +37,7 @@ public class SessionService {
                         .contents(contents)
                         .build();
                 sessionManager.updateAndSaveSession(newSession);
+                sessionManager.addSessionInfo(sessionInfo);
                 return newSession;
         }
 

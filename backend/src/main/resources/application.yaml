@@ -10,6 +10,7 @@ server:
   port: 8088
 
 mana-neutron:
+  mode: dev #dev, prod
   config:
     setting-path: "./config/setting.json"
     prompt-template-config-path: "./config/prompt-template-config.json"

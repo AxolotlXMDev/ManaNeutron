@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import dczx.axolotl.util.file.FilesUtil;
 import github.axolotl.ai.session.Session;
+import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -78,6 +79,10 @@ public class SessionManager {
 
         public Session getSessionById(String sessionId) {
                 return loadedSession.get(sessionId);
+        }
+
+        public void addSessionInfo(SessionInfo sessionInfo) {
+                sessionInfos.addSessionInfo(sessionInfo);
         }
 
 

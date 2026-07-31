@@ -40,4 +40,7 @@ public interface Client {
         @Post("/sessions/sendUserMessage")
         Session sendUserMessage(@Query("sessionId") String sessionId,
                                 @Query("content") String content);
+
+        @Get("/sessions/getSessionById")
+        Session getSessionById(@Query("sessionId") String sessionId);
 }

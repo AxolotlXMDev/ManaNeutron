@@ -58,7 +58,7 @@ public class SessionController {
 
 
         @GetMapping("/getSessionById")
-        public Session getSessionById(@RequestParam String sessionId) {
+        public Session getSessionById(@RequestParam String sessionId) throws IOException {
                 return sessionManager.getSessionById(sessionId);
         }
 

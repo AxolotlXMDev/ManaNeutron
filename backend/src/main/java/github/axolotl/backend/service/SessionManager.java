@@ -78,7 +78,10 @@ public class SessionManager {
                 return session;
         }
 
-        public Session getSessionById(String sessionId) {
+        public Session getSessionById(String sessionId) throws IOException {
+                if (!loadedSession.containsKey(sessionId)) {
+                        loadSession(sessionId);
+                }
                 return loadedSession.get(sessionId);
         }
 

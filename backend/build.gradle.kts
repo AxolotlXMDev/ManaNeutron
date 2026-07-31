@@ -51,6 +51,7 @@ dependencies {
     
     implementation("com.github.42784:EasyUtil:-SNAPSHOT")
     implementation("com.alibaba.fastjson2:fastjson2:2.0.61")
+    implementation("com.alibaba.fastjson2:fastjson2-extension-spring6:2.0.61")
 
     implementation("dev.langchain4j:langchain4j:1.18.0")
     implementation("dev.langchain4j:langchain4j-open-ai:1.18.0")

@@ -42,13 +42,18 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+
     testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
     implementation(project(":data-object"))
+    
     implementation("com.github.42784:EasyUtil:-SNAPSHOT")
     implementation("com.alibaba.fastjson2:fastjson2:2.0.61")
 
+    implementation("dev.langchain4j:langchain4j:1.18.0")
+    implementation("dev.langchain4j:langchain4j-open-ai:1.18.0")
 }
 
 tasks.test {

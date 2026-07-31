@@ -25,6 +25,9 @@ public class SessionService {
         @Autowired
         PromptTemplateService promptTemplateService;
 
+        @Autowired
+        AgentService agentService;
+
         public SessionInfos getSessionInfos() {
                 return sessionManager.getSessionInfos();
         }
@@ -37,7 +40,6 @@ public class SessionService {
                         .contents(contents)
                         .build();
                 sessionManager.updateAndSaveSession(newSession);
-                sessionManager.addSessionInfo(sessionInfo);
                 return newSession;
         }
 
@@ -50,8 +52,4 @@ public class SessionService {
                 return sessionInfoList.getFirst();
         }
 
-        public void sendUserMessage(Session session, String content) throws IOException {
-                session.getContents().add(new UserContent(content));//TODO 真实的消息发送和AI调用
-                sessionManager.updateAndSaveSession(session);
-        }
 }

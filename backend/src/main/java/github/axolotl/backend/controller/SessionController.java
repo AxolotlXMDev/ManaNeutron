@@ -3,6 +3,7 @@ package github.axolotl.backend.controller;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
+import github.axolotl.backend.service.AgentService;
 import github.axolotl.backend.service.SessionManager;
 import github.axolotl.backend.service.SessionService;
 import github.axolotl.setting.ModelChoice;
@@ -22,6 +23,8 @@ public class SessionController {
         SessionService sessionService;
         @Autowired
         SessionManager sessionManager;
+        @Autowired
+        private AgentService agentService;
 
         @GetMapping("/getSessionInfos")
         public SessionInfos getSessionInfos() {
@@ -77,7 +80,7 @@ public class SessionController {
         @GetMapping("/sendUserMessage")
         public boolean sendUserMessage(@RequestParam String sessionId, @RequestParam String content) throws IOException {
                 Session session = sessionManager.getSessionById(sessionId);
-                sessionService.sendUserMessage(session, content);
+                agentService.sendUserMessage(session, content);
                 sessionManager.updateAndSaveSession(session);
                 return true;
         }

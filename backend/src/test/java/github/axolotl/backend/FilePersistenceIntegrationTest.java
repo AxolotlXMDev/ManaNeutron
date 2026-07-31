@@ -7,11 +7,13 @@ import github.axolotl.backend.entity.template.PromptTemplateType;
 import github.axolotl.backend.service.PromptTemplateService;
 import github.axolotl.backend.service.SessionManager;
 import github.axolotl.backend.service.SettingsService;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.event.annotation.AfterTestMethod;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +38,8 @@ class FilePersistenceIntegrationTest {
         @Autowired
         private SessionManager sessionManager;
 
-        @Test
+//        @Test
+//        @Order(1)
         void writesInspectableDataOnlyToTheTestSandbox() throws Exception {
                 Path normalizedSettingPath = Path.of(settingPath).normalize();
                 assertTrue(Files.size(normalizedSettingPath) > 0);
@@ -65,6 +68,7 @@ class FilePersistenceIntegrationTest {
         }
 
         @Test
+        @Order(2)
         void readData() throws Exception {
                 writesInspectableDataOnlyToTheTestSandbox();
                 List<SessionInfo> sessionInfos = sessionManager.getSessionInfos().getSessionInfos();

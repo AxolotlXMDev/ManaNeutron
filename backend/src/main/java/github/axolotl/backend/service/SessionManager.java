@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;
 import dczx.axolotl.util.file.FilesUtil;
 import github.axolotl.ai.session.Session;
+import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -64,6 +65,7 @@ public class SessionManager {
         public void updateAndSaveSession(Session session) throws IOException {
                 updateSession(session);
                 saveSession(session);
+                saveSessionInfo();
         }
 
         public Session updateSession(Session session) {
@@ -80,8 +82,19 @@ public class SessionManager {
                 return loadedSession.get(sessionId);
         }
 
-        public void addSessionInfo(SessionInfo sessionInfo) {
+        private void addSessionInfo(SessionInfo sessionInfo) {
                 sessionInfos.addSessionInfo(sessionInfo);
+        }
+
+        private void saveSessionInfo() {
+                try {
+                        Files.writeString(
+                                Path.of(sessionCachePath),
+                                JSONObject.toJSONString(sessionInfos, JSONWriter.Feature.WriteClassName)
+                        );
+                } catch (IOException e) {
+                        throw new RuntimeException(e);
+                }
         }
 
 

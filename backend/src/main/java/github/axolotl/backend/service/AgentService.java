@@ -131,17 +131,19 @@ public class AgentService {
                                         //TODO 权限校验、审批
                                         DefaultToolExecutor executor = new DefaultToolExecutor(tool, request);
 
-                                        ToolExecutionResult executionResult = executor.executeWithContext(request,
+                                        ToolExecutionResult result = executor.executeWithContext(request,
                                                 InvocationContext.builder()
                                                         .chatMemoryId(sessionId)
                                                         .build());
 
-
+                                        sse.sendEvent(sessionId, SSEName.ToolCallResult, new ToolCallResultDO(
+                                                result.isError(), result.result(), dOUtil.convertToDO(request)
+                                        ));
                                         session.addContent(new ToolContent(
                                                 aiMessage.text(),
                                                 request.id(),
                                                 request.name(),
-                                                !executionResult.isError()
+                                                !result.isError()
                                         ));
 
                                 });

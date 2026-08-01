@@ -30,19 +30,30 @@ public class Session {
                 return info.getName();
         }
 
+        public boolean disworking() {
+                if (dgetLastTaskStatus() == null) {
+                        return false;
+                }
+                return dgetLastTaskStatus().isFinished;
+        }
+
         public void addContent(Content content) {
                 contents.add(content);
         }
 
         public TaskStatus dgetLastTaskStatus() {
                 checkTaskStatusList();
-
+                if (taskStatuses.isEmpty()) {
+                        return null;
+                }
                 return taskStatuses.getLast();
         }
 
         public void dsetLastTaskStatus(TaskStatus task) {
                 checkTaskStatusList();
-                taskStatuses.removeLast();
+                if (!taskStatuses.isEmpty()) {
+                        taskStatuses.removeLast();
+                }
                 taskStatuses.add(task);
         }
 

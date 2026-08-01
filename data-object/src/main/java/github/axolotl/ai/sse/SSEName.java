@@ -10,6 +10,7 @@ public enum SSEName {
         PartialResponse(PartialResponseDO.class),
         PartialThinking(PartialThinkingDO.class),
         PartialToolCall(PartialToolCallDO.class),
+        ToolCallResult(ToolCallResultDO.class),
         CompleteResponse(CompleteResponseDO.class);
         @Getter
         Class<?> valueClass;

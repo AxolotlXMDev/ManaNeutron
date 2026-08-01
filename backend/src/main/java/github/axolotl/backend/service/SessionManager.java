@@ -57,7 +57,7 @@ public class SessionManager {
          */
         public void saveSession(Session session) throws IOException {
                 Files.writeString(
-                        getSessionFilePath(session.getId()),
+                        getSessionFilePath(session.dgetId()),
                         JSONObject.toJSONString(session, JSONWriter.Feature.WriteClassName)
                 );
         }

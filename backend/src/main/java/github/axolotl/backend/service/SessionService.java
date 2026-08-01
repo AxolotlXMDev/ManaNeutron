@@ -25,9 +25,6 @@ public class SessionService {
         @Autowired
         PromptTemplateService promptTemplateService;
 
-        @Autowired
-        AgentService agentService;
-
         public SessionInfos getSessionInfos() {
                 return sessionManager.getSessionInfos();
         }

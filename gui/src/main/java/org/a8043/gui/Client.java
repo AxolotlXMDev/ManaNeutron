@@ -37,9 +37,13 @@ public interface Client {
                             @Body("contentIndex") int contentIndex,
                             @Body("content") String content);
 
-        @Post("/sessions/sendUserMessage")
-        Session sendUserMessage(@Query("sessionId") String sessionId,
-                                @Query("content") String content);
+        @Post("/sessions/insertUserMessage")
+        Session insertUserMessage(@Query("sessionId") String sessionId,
+                                  @Query("content") String content);
+
+        @Post("/sessions/startAgentLoop")
+        Session startAgentLoop(@Query("sessionId") String sessionId,
+                               @Query("isStartNewTask") boolean isStartNewTask);
 
         @Get("/sessions/getSessionById")
         Session getSessionById(@Query("sessionId") String sessionId);

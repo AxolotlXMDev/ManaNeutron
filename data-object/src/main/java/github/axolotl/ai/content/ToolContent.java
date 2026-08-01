@@ -12,15 +12,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ToolContent extends Content {
         private String id;
+        private String name;
         private boolean isSuccess;
 
         public ToolContent(String content) {
                 super(content);
         }
 
-        public ToolContent(String content, String id, boolean isSuccess) {
+        public ToolContent(String content, String id, String name, boolean isSuccess) {
                 super(content);
                 this.id = id;
+                this.name = name;
                 this.isSuccess = isSuccess;
         }
 }

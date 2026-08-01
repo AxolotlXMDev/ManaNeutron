@@ -1,12 +1,14 @@
 package github.axolotl.ai.session;
 
 import github.axolotl.ai.TODO;
+import github.axolotl.ai.TokenUsageDO;
 import github.axolotl.ai.content.Content;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -14,15 +16,39 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Session {
-        private SessionInfo info;
-        private List<Content> contents;
-        private List<TODO> todos;
+        SessionInfo info;
+        List<Content> contents;
+        List<TODO> todos;
+        TokenUsageDO tokenUsageDO;
+        List<TaskStatus> taskStatuses;
 
-        public String getId() {
+        public String dgetId() {
                 return info.getId();
         }
-        public String getName() {
+
+        public String dgetName() {
                 return info.getName();
         }
 
+        public void addContent(Content content) {
+                contents.add(content);
+        }
+
+        public TaskStatus dgetLastTaskStatus() {
+                checkTaskStatusList();
+
+                return taskStatuses.getLast();
+        }
+
+        public void dsetLastTaskStatus(TaskStatus task) {
+                checkTaskStatusList();
+                taskStatuses.removeLast();
+                taskStatuses.add(task);
+        }
+
+        private void checkTaskStatusList() {
+                if (taskStatuses == null) {
+                        taskStatuses = new ArrayList<>();
+                }
+        }
 }

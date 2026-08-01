@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.AfterTestMethod;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +62,7 @@ class FilePersistenceIntegrationTest {
 
                 Path sessionFile = Path.of(sessionPath).resolve(sessionId + ".json");
                 assertTrue(Files.exists(sessionFile));
-                assertEquals(sessionId, sessionManager.getSessionById(sessionId).getId());
+                assertEquals(sessionId, sessionManager.getSessionById(sessionId).dgetId());
                 System.out.println("Inspectable test data: " + sessionFile.toAbsolutePath());
         }
 

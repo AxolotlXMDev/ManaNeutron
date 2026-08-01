@@ -1,5 +1,6 @@
 package github.axolotl.backend.controller;
 
+import ch.qos.logback.classic.net.SMTPAppender;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
@@ -7,9 +8,6 @@ import github.axolotl.backend.service.AgentService;
 import github.axolotl.backend.service.SessionManager;
 import github.axolotl.backend.service.SessionService;
 import github.axolotl.setting.ModelChoice;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,12 +75,18 @@ public class SessionController {
                 return true;
         }
 
-        @GetMapping("/sendUserMessage")
-        public boolean sendUserMessage(@RequestParam String sessionId, @RequestParam String content) throws IOException {
+        @GetMapping("/insertUserMessage")
+        public boolean insertUserMessage(@RequestParam String sessionId, @RequestParam String content) throws IOException {
                 Session session = sessionManager.getSessionById(sessionId);
-                agentService.sendUserMessage(session, content);
+                agentService.insertUserMessage(session, content);
                 sessionManager.updateAndSaveSession(session);
                 return true;
+        }
+
+        @GetMapping("/startAgentLoop")
+        public void startAgentLoop(@RequestParam String sessionId, @RequestParam Boolean isStartNewTask) throws IOException {
+                Session session = sessionManager.getSessionById(sessionId);
+                agentService.startLoop(session, isStartNewTask);
         }
 
 }

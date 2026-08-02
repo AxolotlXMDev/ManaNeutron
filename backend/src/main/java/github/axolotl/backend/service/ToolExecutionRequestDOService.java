@@ -2,7 +2,6 @@ package github.axolotl.backend.service;
 
 import com.alibaba.fastjson2.JSONObject;
 import dczx.axolotl.util.file.FilesUtil;
-import github.axolotl.ai.session.SessionInfos;
 import github.axolotl.ai.sse.ToolExecutionRequestDO;
 import github.axolotl.ai.sse.ToolExecutionRequestDOs;
 import jakarta.annotation.PostConstruct;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -28,7 +28,7 @@ public class ToolExecutionRequestDOService {
                 String text = Files.readString(Path.of(toolExecutionRequestPath));
                 requests = JSONObject.parseObject(text, ToolExecutionRequestDOs.class);
                 if (requests == null || requests.getRequests() == null) {
-                        requests = new ToolExecutionRequestDOs(new ArrayList<>());
+                        requests = new ToolExecutionRequestDOs(new HashMap<>());
                 }
         }
 
@@ -60,7 +60,7 @@ public class ToolExecutionRequestDOService {
         }
 
         public List<ToolExecutionRequestDO> getRequests() {
-                return requests.getRequests();
+                return requests.getRequests().values().stream().toList();
         }
 
         public void saveRequests() throws IOException {
@@ -68,4 +68,10 @@ public class ToolExecutionRequestDOService {
                         JSONObject.toJSONString(requests));
         }
 
+        public List<ToolExecutionRequestDO> getNonExecutedRequests() {
+                return getNonExecutedRequests()
+                        .stream()
+                        .filter(request -> !request.isExecuted())
+                        .toList();
+        }
 }

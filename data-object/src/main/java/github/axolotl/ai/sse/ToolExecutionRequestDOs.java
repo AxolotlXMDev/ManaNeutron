@@ -6,15 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ToolExecutionRequestDOs {
         @Getter
-        List<ToolExecutionRequestDO> requests;
+        Map<String, ToolExecutionRequestDO> requests;
 
         public void addRequest(ToolExecutionRequestDO request) {
-                requests.add(request);
+                requests.put(request.getId(), request);
         }
 }

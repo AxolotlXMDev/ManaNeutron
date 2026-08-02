@@ -123,11 +123,13 @@ public class AgentService {
                                 sse.sendEvent(sessionId, SSEName.CompleteResponse,
                                         new CompleteResponseDO(aiMessage.thinking(),
                                                 aiMessage.text(),
-                                                dOUtil.convertToDO(aiMessage.toolExecutionRequests(), sessionId, System.currentTimeMillis()),
+                                                dOUtil.convertToDO(aiMessage.toolExecutionRequests(), sessionId, false, System.currentTimeMillis()),
                                                 dOUtil.convertToDO(finishReason)
                                         )
                                 );
-
+                                toolExecutionRequests.forEach(request -> {//先存isExecuted=false的在内存，便于之后拿取
+                                        toolExecutionRequestDOService.addRequest(dOUtil.convertToDO(request, sessionId, false, System.currentTimeMillis()));
+                                });
                                 //执行工具调用
                                 toolExecutionRequests.forEach(request -> {
                                         Object tool = switch (request.name()) {
@@ -148,7 +150,7 @@ public class AgentService {
                                         sse.sendEvent(sessionId, SSEName.ToolCallResult, new ToolCallResultDO(
                                                 result.isError(), result.result(), request.id()
                                         ));
-                                        toolExecutionRequestDOService.addRequest(dOUtil.convertToDO(request, sessionId, System.currentTimeMillis()));
+                                        toolExecutionRequestDOService.addRequest(dOUtil.convertToDO(request, sessionId, true, System.currentTimeMillis()));
                                         session.addContent(new ToolContent(
                                                 result.resultText(),
                                                 request.id(),

@@ -10,18 +10,19 @@ import java.util.List;
 
 @Component
 public class DOUtil {
-        public ToolExecutionRequestDO convertToDO(ToolExecutionRequest toolExecutionRequest, String sessionId, long createdAt) {
+        public ToolExecutionRequestDO convertToDO(ToolExecutionRequest toolExecutionRequest, String sessionId,boolean isExecuted, long createdAt) {
                 return new ToolExecutionRequestDO(
                         toolExecutionRequest.id(),
                         toolExecutionRequest.name(),
                         toolExecutionRequest.arguments(),
                         sessionId,
+                        isExecuted,
                         createdAt
                 );
         }
 
-        public List<ToolExecutionRequestDO> convertToDO(List<ToolExecutionRequest> toolExecutionRequests, String sessionId, long createdAt) {
-                return toolExecutionRequests.stream().map(request -> this.convertToDO(request, sessionId, createdAt)).toList();
+        public List<ToolExecutionRequestDO> convertToDO(List<ToolExecutionRequest> toolExecutionRequests, String sessionId, boolean isExecuted, long createdAt) {
+                return toolExecutionRequests.stream().map(request -> this.convertToDO(request, sessionId, isExecuted, createdAt)).toList();
         }
 
         public FinishReasonDO convertToDO(FinishReason finishReason) {

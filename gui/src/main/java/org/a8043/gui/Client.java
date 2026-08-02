@@ -4,8 +4,11 @@ import com.dtflys.forest.annotation.*;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
+import github.axolotl.ai.sse.ToolExecutionRequestDO;
 import github.axolotl.setting.ModelChoice;
 import github.axolotl.setting.Settings;
+
+import java.util.List;
 
 @BaseRequest(
         baseURL = "${url}",
@@ -47,4 +50,10 @@ public interface Client {
 
         @Get("/sessions/getSessionById")
         Session getSessionById(@Query("sessionId") String sessionId);
+
+        @Post("/requests/getRequestById")
+        ToolExecutionRequestDO getRequestById(@Query("id") String id);
+
+        @Post("/requests/getRequestsByIds")
+        List<ToolExecutionRequestDO> getRequestsByIds(@Query("ids") List<String> ids);
 }

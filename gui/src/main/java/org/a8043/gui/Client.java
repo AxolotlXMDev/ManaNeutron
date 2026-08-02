@@ -51,9 +51,12 @@ public interface Client {
         @Get("/sessions/getSessionById")
         Session getSessionById(@Query("sessionId") String sessionId);
 
-        @Post("/requests/getRequestById")
+        @Get("/requests/getRequestById")
         ToolExecutionRequestDO getRequestById(@Query("id") String id);
 
         @Post("/requests/getRequestsByIds")
         List<ToolExecutionRequestDO> getRequestsByIds(@Query("ids") List<String> ids);
+
+        @Get("/requests/getAll")
+        List<ToolExecutionRequestDO> getAllRequests();
 }

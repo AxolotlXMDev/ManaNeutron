@@ -37,7 +37,7 @@ public class ToolExecutionRequestDOService {
         }
 
         public void removeRequest(ToolExecutionRequestDO request) {
-                requests.getRequests().remove(request);
+                requests.getRequests().remove(request.getId());
         }
 
         public ToolExecutionRequestDO getRequestById(String requestId) {

@@ -1,17 +1,10 @@
 package github.axolotl.backend.controller;
 
-import github.axolotl.ai.session.Session;
-import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.sse.ToolExecutionRequestDO;
 import github.axolotl.backend.service.ToolExecutionRequestDOService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/requests")
@@ -23,8 +16,8 @@ public class ToolExecutionRequestDOController {
                 this.toolExecutionRequestDOService = toolExecutionRequestDOService;
         }
 
-        @PostMapping("/getRequestById")
-        public ToolExecutionRequestDO getRequestById(@RequestBody String id) {
+        @GetMapping("/getRequestById")
+        public ToolExecutionRequestDO getRequestById(@RequestParam String id) {
                 return toolExecutionRequestDOService.getRequestById(id);
         }
 
@@ -36,6 +29,11 @@ public class ToolExecutionRequestDOController {
         @PostMapping("/getNonExecutedRequests")
         public List<ToolExecutionRequestDO> getNonExecutedRequests() {
                 return toolExecutionRequestDOService.getNonExecutedRequests();
+        }
+
+        @GetMapping("/getAll")
+        public List<ToolExecutionRequestDO> getAllRequests() {
+                return toolExecutionRequestDOService.getRequests();
         }
 
 }

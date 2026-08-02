@@ -182,11 +182,7 @@ public class AgentService {
 
                         @Override
                         public void onError(Throwable error) {
-                                try {
-                                        throw error;
-                                } catch (Throwable e) {
-                                        throw new RuntimeException(e);
-                                }
+                                throw new RuntimeException(error);
                         }
                 };
         }

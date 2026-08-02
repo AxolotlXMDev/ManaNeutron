@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class ToolCallResultDO {
         boolean isError;
         Object result;
-        ToolExecutionRequestDO request;
+        String requestId;
 }

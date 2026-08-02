@@ -11,4 +11,6 @@ public class ToolExecutionRequestDO {
         String id;
         String name;
         String arguments;
+        String sessionId;
+        long createdAt;
 }

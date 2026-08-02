@@ -3,16 +3,11 @@ package github.axolotl.backend.service;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.agent.tool.ToolSpecifications;
 import dev.langchain4j.data.message.*;
-import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.request.json.*;
-import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiChatRequestParameters;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
-import dev.langchain4j.model.openai.internal.chat.AssistantMessage;
-import dev.langchain4j.service.tool.DefaultToolExecutor;
 import github.axolotl.ai.content.AssistantContent;
 import github.axolotl.ai.content.SystemContent;
 import github.axolotl.ai.content.ToolContent;
@@ -20,6 +15,7 @@ import github.axolotl.ai.content.UserContent;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.tool.ToolDefinition;
 import github.axolotl.ai.tool.ToolParameter;
+import github.axolotl.backend.tool.DOUtil;
 import github.axolotl.backend.tool.ReadFileTool;
 import github.axolotl.setting.ModelChoice;
 import github.axolotl.setting.Provider;
@@ -37,10 +33,14 @@ import java.util.Map;
 public class AIAPIService {
         private final SettingsService settingsService;
         private final ProviderService providerService;
+        private final DOUtil dOUtil;
+        private final ToolExecutionRequestDOService toolExecutionRequestDOService;
 
-        public AIAPIService(SettingsService settingsService, ProviderService providerService) {
+        public AIAPIService(SettingsService settingsService, ProviderService providerService, DOUtil dOUtil, ToolExecutionRequestDOService toolExecutionRequestDOService) {
                 this.settingsService = settingsService;
                 this.providerService = providerService;
+                this.dOUtil = dOUtil;
+                this.toolExecutionRequestDOService = toolExecutionRequestDOService;
         }
 
         private OpenAiStreamingChatModel buildChatModel(Session session) {
@@ -91,16 +91,27 @@ public class AIAPIService {
                 List<ChatMessage> messages = new ArrayList<>();
                 session.getContents().forEach(c -> {
                                 String content = c.getContent();
-                                messages.add(switch (c) {
+                                ChatMessage message = switch (c) {
                                         case UserContent ignored -> UserMessage.from(content);
                                         case SystemContent ignored -> SystemMessage.from(content);
-                                        case AssistantContent ignored -> AiMessage.from(content);
+                                        case AssistantContent assistantContent -> AiMessage.from(
+                                                assistantContent.getContent(),
+                                                dOUtil.convertToToolExecutionRequest(
+                                                        toolExecutionRequestDOService.getRequestsByIds(assistantContent.getRequestIds())
+                                                )
+                                        );
                                         case ToolContent tool ->
-                                                ToolExecutionResultMessage.from(tool.getId(), tool.getName(), tool.getContent());
+                                                ToolExecutionResultMessage.builder()
+                                                        .id(tool.getRequestId())
+                                                        .toolName(tool.getName())
+                                                        .contents(new TextContent(tool.getContent()))
+                                                        .isError(!tool.isSuccess())
+                                                        .build();
 
                                         default ->
                                                 throw new IllegalStateException("Unexpected value: " + c);
-                                });
+                                };
+                                messages.add(message);
 
                         }
                 );

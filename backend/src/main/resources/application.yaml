@@ -16,5 +16,6 @@ mana-neutron:
     prompt-template-config-path: "./config/prompt-template-config.json"
     default-prompt-path: "./prompt_template/init.txt"
     token-config-path: "./config/token.txt"
+    tool-execution-request-path: "./session/tool-execution-request.json"
     session-path: "./session"
     session-cache-path: "./session/session.json"

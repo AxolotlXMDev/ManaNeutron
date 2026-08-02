@@ -1,7 +1,6 @@
 package github.axolotl.ai.content;
 
 import com.alibaba.fastjson2.annotation.JSONType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @JSONType(typeName = "tool")
 @NoArgsConstructor
 public class ToolContent extends Content {
-        private String id;
+        private String requestId;
         private String name;
         private boolean isSuccess;
 
@@ -19,9 +18,9 @@ public class ToolContent extends Content {
                 super(content);
         }
 
-        public ToolContent(String content, String id, String name, boolean isSuccess) {
+        public ToolContent(String content, String requestId, String name, boolean isSuccess) {
                 super(content);
-                this.id = id;
+                this.requestId = requestId;
                 this.name = name;
                 this.isSuccess = isSuccess;
         }

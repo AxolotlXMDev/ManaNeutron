@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
+import static github.axolotl.ai.tool.Utils.getOrDefault;
+
 /**
  * 负责提示词构建、AgentLoop、工具调用
  */
@@ -45,6 +47,8 @@ public class AgentService {
         @Autowired
         private DOUtil dOUtil;
         private StreamingChatResponseHandler handler;
+        @Autowired
+        private ToolExecutionRequestDOService toolExecutionRequestDOService;
 
 
         public void insertUserMessage(Session session, String content) throws IOException {
@@ -65,6 +69,11 @@ public class AgentService {
                         task.setFinished(false);
                 }
                 session.dsetLastTaskStatus(task);
+                reloadHandler(session, sessionId);
+                apiService.doChat(session, handler);
+        }
+
+        private void reloadHandler(Session session, String sessionId) {
                 handler = new StreamingChatResponseHandler() {
 
                         @Override
@@ -98,36 +107,31 @@ public class AgentService {
                         @Override
                         public void onCompleteResponse(ChatResponse completeResponse) {
                                 AiMessage aiMessage = completeResponse.aiMessage();
-                                FinishReason finishReason = completeResponse.finishReason();
-                                switch (finishReason) {
-                                        case STOP -> {
-                                                TokenUsageDO fullTokenUsageDO = new TokenUsageDO(completeResponse.tokenUsage().inputTokenCount(), completeResponse.tokenUsage().outputTokenCount());
-                                                session.setTokenUsageDO(fullTokenUsageDO);
-
-                                                TaskStatus task = session.dgetLastTaskStatus();
-                                                task.setFinishedTime(System.currentTimeMillis());
-                                                task.setFinished(true);
-                                        }
-                                        case TOOL_EXECUTION -> {
-                                                apiService.doChat(session, handler);
-                                        }
-                                }
                                 TokenUsage tokenUsage = completeResponse.tokenUsage();
                                 TokenUsageDO assistantResponseTokenUsageDO = new TokenUsageDO(tokenUsage.inputTokenCount(), tokenUsage.outputTokenCount());
-                                session.addContent(new AssistantContent(aiMessage.text(), assistantResponseTokenUsageDO));
-
                                 List<ToolExecutionRequest> toolExecutionRequests = aiMessage.toolExecutionRequests();
 
+                                session.addContent(new AssistantContent(
+                                        getOrDefault(aiMessage.text(), ""),
+                                        assistantResponseTokenUsageDO,
+                                        toolExecutionRequests.stream().map(ToolExecutionRequest::id).toList()));
+
+
+                                FinishReason finishReason = completeResponse.finishReason();
+
+                                //SSE: AI回复完成
                                 sse.sendEvent(sessionId, SSEName.CompleteResponse,
                                         new CompleteResponseDO(aiMessage.thinking(),
                                                 aiMessage.text(),
-                                                dOUtil.convertToDO(aiMessage.toolExecutionRequests()),
+                                                dOUtil.convertToDO(aiMessage.toolExecutionRequests(), sessionId, System.currentTimeMillis()),
                                                 dOUtil.convertToDO(finishReason)
-                                        ));
+                                        )
+                                );
 
+                                //执行工具调用
                                 toolExecutionRequests.forEach(request -> {
                                         Object tool = switch (request.name()) {
-                                                case "readFile" -> new ReadFileTool();
+                                                case "read_file" -> new ReadFileTool();
                                                 default ->
                                                         throw new IllegalArgumentException(
                                                                 "未知工具: " + request.name()
@@ -140,20 +144,36 @@ public class AgentService {
                                                 InvocationContext.builder()
                                                         .chatMemoryId(sessionId)
                                                         .build());
-
+                                        //SSE: 工具调用结果
                                         sse.sendEvent(sessionId, SSEName.ToolCallResult, new ToolCallResultDO(
-                                                result.isError(), result.result(), dOUtil.convertToDO(request)
+                                                result.isError(), result.result(), request.id()
                                         ));
+                                        toolExecutionRequestDOService.addRequest(dOUtil.convertToDO(request, sessionId, System.currentTimeMillis()));
                                         session.addContent(new ToolContent(
-                                                aiMessage.text(),
+                                                result.resultText(),
                                                 request.id(),
                                                 request.name(),
                                                 !result.isError()
                                         ));
 
                                 });
+                                switch (finishReason) {
+                                        case STOP -> {
+                                                TokenUsageDO fullTokenUsageDO = new TokenUsageDO(completeResponse.tokenUsage().inputTokenCount(), completeResponse.tokenUsage().outputTokenCount());
+                                                session.setTokenUsageDO(fullTokenUsageDO);
+
+                                                TaskStatus task = session.dgetLastTaskStatus();
+                                                task.setFinishedTime(System.currentTimeMillis());
+                                                task.setFinished(true);
+                                        }
+                                        case TOOL_EXECUTION -> {
+                                                reloadHandler(session, sessionId);
+                                                apiService.doChat(session, handler);
+                                        }
+                                }
                                 try {
                                         sessionManager.updateAndSaveSession(session);
+                                        toolExecutionRequestDOService.saveRequests();
                                 } catch (IOException e) {
                                         throw new RuntimeException(e);
                                 }
@@ -168,7 +188,6 @@ public class AgentService {
                                 }
                         }
                 };
-                apiService.doChat(session, handler);
         }
 
 }

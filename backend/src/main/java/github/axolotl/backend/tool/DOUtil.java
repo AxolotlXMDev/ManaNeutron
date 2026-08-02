@@ -10,18 +10,33 @@ import java.util.List;
 
 @Component
 public class DOUtil {
-        public ToolExecutionRequestDO convertToDO(ToolExecutionRequest toolExecutionRequest) {
+        public ToolExecutionRequestDO convertToDO(ToolExecutionRequest toolExecutionRequest, String sessionId, long createdAt) {
                 return new ToolExecutionRequestDO(
                         toolExecutionRequest.id(),
                         toolExecutionRequest.name(),
-                        toolExecutionRequest.arguments()
+                        toolExecutionRequest.arguments(),
+                        sessionId,
+                        createdAt
                 );
         }
 
-        public List<ToolExecutionRequestDO> convertToDO(List<ToolExecutionRequest> toolExecutionRequests) {
-                return toolExecutionRequests.stream().map(this::convertToDO).toList();
+        public List<ToolExecutionRequestDO> convertToDO(List<ToolExecutionRequest> toolExecutionRequests, String sessionId, long createdAt) {
+                return toolExecutionRequests.stream().map(request -> this.convertToDO(request, sessionId, createdAt)).toList();
         }
+
         public FinishReasonDO convertToDO(FinishReason finishReason) {
-                return  FinishReasonDO.valueOf(finishReason.name());
+                return FinishReasonDO.valueOf(finishReason.name());
+        }
+
+        public ToolExecutionRequest convertToToolExecutionRequest(ToolExecutionRequestDO toolExecutionRequestDO) {
+                return ToolExecutionRequest.builder()
+                        .id(toolExecutionRequestDO.getId())
+                        .name(toolExecutionRequestDO.getName())
+                        .arguments(toolExecutionRequestDO.getArguments())
+                        .build();
+        }
+
+        public List<ToolExecutionRequest> convertToToolExecutionRequest(List<ToolExecutionRequestDO> toolExecutionRequestDOs) {
+                return toolExecutionRequestDOs.stream().map(this::convertToToolExecutionRequest).toList();
         }
 }

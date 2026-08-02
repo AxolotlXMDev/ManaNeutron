@@ -1,7 +1,6 @@
 package github.axolotl.backend.service;
 
 import github.axolotl.ai.content.Content;
-import github.axolotl.ai.content.UserContent;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;

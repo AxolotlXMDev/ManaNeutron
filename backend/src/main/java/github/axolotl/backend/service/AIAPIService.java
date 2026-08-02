@@ -17,6 +17,7 @@ import github.axolotl.ai.tool.ToolDefinition;
 import github.axolotl.ai.tool.ToolParameter;
 import github.axolotl.backend.tool.DOUtil;
 import github.axolotl.backend.tool.ReadFileTool;
+import github.axolotl.backend.tool.TerminalTool;
 import github.axolotl.setting.ModelChoice;
 import github.axolotl.setting.Provider;
 import github.axolotl.setting.Settings;
@@ -67,8 +68,10 @@ public class AIAPIService {
         private List<ToolSpecification> getToolSpecifications() {
                 List<ToolSpecification> tools = new ArrayList<>();
                 List<ToolSpecification> readFileTool = ToolSpecifications.toolSpecificationsFrom(ReadFileTool.class);
+                List<ToolSpecification> terminalTool = ToolSpecifications.toolSpecificationsFrom(TerminalTool.class);
 
                 tools.addAll(readFileTool);
+                tools.addAll(terminalTool);
                 return tools;
         }
 

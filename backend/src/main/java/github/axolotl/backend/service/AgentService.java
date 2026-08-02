@@ -18,6 +18,7 @@ import github.axolotl.ai.sse.*;
 import github.axolotl.backend.controller.SSEController;
 import github.axolotl.backend.tool.DOUtil;
 import github.axolotl.backend.tool.ReadFileTool;
+import github.axolotl.backend.tool.TerminalTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +34,6 @@ import static github.axolotl.ai.tool.Utils.getOrDefault;
 public class AgentService {
         @Autowired
         SessionManager sessionManager;
-
-        @Autowired
-        PromptTemplateService promptTemplateService;
 
         @Autowired
         AIAPIService apiService;
@@ -119,6 +117,9 @@ public class AgentService {
 
                                 FinishReason finishReason = completeResponse.finishReason();
 
+                                toolExecutionRequests.forEach(request -> {//先存isExecuted=false的在内存，便于之后拿取
+                                        toolExecutionRequestDOService.addRequest(dOUtil.convertToDO(request, sessionId, false, System.currentTimeMillis()));
+                                });
                                 //SSE: AI回复完成
                                 sse.sendEvent(sessionId, SSEName.CompleteResponse,
                                         new CompleteResponseDO(aiMessage.thinking(),
@@ -127,13 +128,11 @@ public class AgentService {
                                                 dOUtil.convertToDO(finishReason)
                                         )
                                 );
-                                toolExecutionRequests.forEach(request -> {//先存isExecuted=false的在内存，便于之后拿取
-                                        toolExecutionRequestDOService.addRequest(dOUtil.convertToDO(request, sessionId, false, System.currentTimeMillis()));
-                                });
                                 //执行工具调用
                                 toolExecutionRequests.forEach(request -> {
                                         Object tool = switch (request.name()) {
                                                 case "read_file" -> new ReadFileTool();
+                                                case "run_command" -> new TerminalTool();
                                                 default ->
                                                         throw new IllegalArgumentException(
                                                                 "未知工具: " + request.name()

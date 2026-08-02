@@ -1,6 +1,7 @@
 package org.a8043.gui;
 
 import com.dtflys.forest.annotation.*;
+import com.dtflys.forest.http.ForestSSE;
 import github.axolotl.ai.session.Session;
 import github.axolotl.ai.session.SessionInfo;
 import github.axolotl.ai.session.SessionInfos;
@@ -36,17 +37,20 @@ public interface Client {
                            @Body("modelChoice") ModelChoice modelChoice);
 
         @Post("/sessions/editContent")
-        Session editContent(@Body("`sessionId") String sessionId,
+        Session editContent(@Body("sessionId") String sessionId,
                             @Body("contentIndex") int contentIndex,
                             @Body("content") String content);
 
-        @Post("/sessions/insertUserMessage")
-        Session insertUserMessage(@Query("sessionId") String sessionId,
+        @Get("/sessions/insertUserMessage")
+        boolean insertUserMessage(@Query("sessionId") String sessionId,
                                   @Query("content") String content);
 
-        @Post("/sessions/startAgentLoop")
-        Session startAgentLoop(@Query("sessionId") String sessionId,
+        @Get("/sessions/startAgentLoop")
+        void startAgentLoop(@Query("sessionId") String sessionId,
                                @Query("isStartNewTask") boolean isStartNewTask);
+
+        @Get("/sse/regMessageEmitter")
+        ForestSSE regMessageEmitter(@Query("sessionId") String sessionId);
 
         @Get("/sessions/getSessionById")
         Session getSessionById(@Query("sessionId") String sessionId);
@@ -54,9 +58,6 @@ public interface Client {
         @Get("/requests/getRequestById")
         ToolExecutionRequestDO getRequestById(@Query("id") String id);
 
-        @Post("/requests/getRequestsByIds")
+        @Get("/requests/getRequestsByIds")
         List<ToolExecutionRequestDO> getRequestsByIds(@Query("ids") List<String> ids);
-
-        @Get("/requests/getAll")
-        List<ToolExecutionRequestDO> getAllRequests();
 }

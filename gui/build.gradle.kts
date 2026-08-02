@@ -10,7 +10,7 @@ version = "1.0-SNAPSHOT"
 
 javafx {
     version = "21.0.4"
-    modules = listOf("javafx.controls", "javafx.fxml")
+    modules = listOf("javafx.controls", "javafx.fxml", "javafx.swing")
 }
 
 application {
@@ -38,7 +38,13 @@ dependencies {
     implementation("cn.hutool:hutool-core:5.8.38")
     implementation("com.alibaba.fastjson2:fastjson2:2.0.46")
     implementation("com.dtflys.forest:forest-core:1.7.6")
+
     implementation("io.github.typhon0:AnimateFX:1.3.0")
+    implementation("com.fifesoft:rsyntaxtextarea:4.0.0")
+    implementation("com.vladsch.flexmark:flexmark-all:0.64.8")
+
+    implementation("com.google.auto.service:auto-service:1.1.1")
+    annotationProcessor("com.google.auto.service:auto-service:1.1.1")
 
     testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")

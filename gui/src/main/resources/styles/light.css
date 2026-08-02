@@ -403,3 +403,86 @@
     -fx-background-radius: 4px;
     -fx-padding: 6px 10px;
 }
+
+/* 树视图 */
+
+.tree-view {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6px;
+    -fx-border-color: #e8ecf1;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+}
+
+.tree-view .tree-cell {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-padding: 6px 8px;
+}
+
+.tree-view .tree-cell:hover {
+    -fx-background-color: #eaf3fb;
+}
+
+.tree-view .tree-cell:selected {
+    -fx-background-color: #d4e4f8;
+    -fx-text-fill: #1a4972;
+}
+
+.tree-view .tree-cell:selected:hover {
+    -fx-background-color: #c4d9f2;
+}
+
+.tree-view .tree-cell .arrow {
+    -fx-background-color: #999999;
+}
+
+.tree-view .tree-cell:expanded .arrow {
+    -fx-background-color: #4a90d9;
+}
+
+/* 标题面板 */
+
+.titled-pane {
+    -fx-text-fill: grey;
+    -fx-font-size: 12px;
+}
+
+/* 会话状态栏 */
+
+.session-status {
+    -fx-background-color: rgb(0, 0, 0, 0);
+}
+
+.session-status.model, .session-status.effort {
+    -fx-text-fill: rgb(207, 135, 0);
+}
+
+/* 会话内容 */
+
+.user-content {
+    -fx-padding: 5px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-background-color: rgb(237, 243, 254);
+}
+
+.assistant-content, tool-content {
+    -fx-padding: 5px;
+}
+
+.tool-content-failed {
+    -fx-text-fill: red;
+}
+
+/* 工具图标 */
+
+.read-file-tool {
+    -fx-graphic: url("../icons/light/read_file.png");
+    -fx-content-display: LEFT;
+}
+
+.run-command-tool {
+    -fx-graphic: url("../icons/light/run_command.png");
+    -fx-content-display: LEFT;
+}

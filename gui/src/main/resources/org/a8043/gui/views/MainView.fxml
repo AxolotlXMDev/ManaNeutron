@@ -24,7 +24,7 @@
                                            onInputMethodTextChanged="#search" fx:id="searchField"/>
                             </children>
                         </HBox>
-                        <TreeView fx:id="sessionsTree" onMouseClicked="#openSession"/>
+                        <TreeView fx:id="sessionsTree" onMouseClicked="#onSessionsClick"/>
                     </children>
                 </VBox>
             </content>

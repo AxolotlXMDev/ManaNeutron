@@ -3,6 +3,7 @@ package org.a8043.gui;
 import animatefx.animation.FadeIn;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.dtflys.forest.Forest;
 import javafx.application.Application;
@@ -22,9 +23,15 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.a8043.gui.session.ContentRenderer;
+import org.a8043.gui.session.Status;
+import org.a8043.gui.session.ToolCallRenderer;
+import org.a8043.gui.session.contentRenderers.ToolContentRenderer;
 import org.a8043.gui.views.LoginView;
+import org.a8043.gui.views.SessionTab;
 
 import java.io.File;
+import java.util.ServiceLoader;
 
 @Getter
 public class Main extends Application {
@@ -35,13 +42,26 @@ public class Main extends Application {
         private Client currentClient;
         private final StackPane pane = new StackPane();
 
+        static {
+                Forest.config().setLogResponseContent(true);
+                registerServices();
+        }
+
+        private static void registerServices() {
+                ServiceLoader<Status> statusLoader = ServiceLoader.load(Status.class);
+                ServiceLoader<ContentRenderer> contentRendererLoader = ServiceLoader.load(ContentRenderer.class);
+                ServiceLoader<ToolCallRenderer> toolCallRendererLoader = ServiceLoader.load(ToolCallRenderer.class);
+                statusLoader.forEach(SessionTab::registerStatus);
+                contentRendererLoader.forEach(SessionTab::registerContentRenderer);
+                toolCallRendererLoader.forEach(ToolContentRenderer::registerRenderer);
+        }
+
         public Main() {
                 instance = this;
         }
 
         @Override
         public void start(Stage stage) throws Exception {
-                Forest.config().setLogResponseContent(true);
                 File propertiesFile = new File("./config/properties.json");
                 properties = propertiesFile.exists() ?
                         JSONObject.parse(FileUtil.readUtf8String(propertiesFile)) : new JSONObject();
@@ -52,6 +72,9 @@ public class Main extends Application {
                 setUserAgentStylesheet(ResourceUtil.getResource("styles/" +
                                                                 settings.computeIfAbsent("style", k -> "light") +
                                                                 ".css").toString());
+
+                ((JSONArray) settings.computeIfAbsent("statusLine", k -> new JSONArray()))
+                        .forEach(n -> SessionTab.registerVisibleStatus((String) n));
 
                 stage.setTitle("ManaNeutron");
                 JSONObject window = (JSONObject) properties.computeIfAbsent("window", k -> new JSONObject());
@@ -73,7 +96,7 @@ public class Main extends Application {
         }
 
         @SneakyThrows
-        private static Node loadFxml(Class<?> clazz, Object... args) {
+        public static Node loadFxml(Class<?> clazz, Object... args) {
                 FXMLLoader loader = new FXMLLoader(clazz.getResource(clazz.getSimpleName() + ".fxml"));
                 loader.setResources(I18n.getLangBundle());
                 loader.setControllerFactory(c -> {

@@ -4,6 +4,7 @@ import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.invocation.InvocationContext;
 import dev.langchain4j.model.chat.response.*;
+import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.service.tool.DefaultToolExecutor;
 import dev.langchain4j.service.tool.ToolExecutionResult;
@@ -43,6 +44,7 @@ public class AgentService {
         private SessionService sessionService;
         @Autowired
         private DOUtil dOUtil;
+        private StreamingChatResponseHandler handler;
 
 
         public void insertUserMessage(Session session, String content) throws IOException {
@@ -63,7 +65,7 @@ public class AgentService {
                         task.setFinished(false);
                 }
                 session.dsetLastTaskStatus(task);
-                apiService.doChat(session, new StreamingChatResponseHandler() {
+                handler = new StreamingChatResponseHandler() {
 
                         @Override
                         public void onCompleteToolCall(CompleteToolCall completeToolCall) {
@@ -96,7 +98,8 @@ public class AgentService {
                         @Override
                         public void onCompleteResponse(ChatResponse completeResponse) {
                                 AiMessage aiMessage = completeResponse.aiMessage();
-                                switch (completeResponse.finishReason()) {
+                                FinishReason finishReason = completeResponse.finishReason();
+                                switch (finishReason) {
                                         case STOP -> {
                                                 TokenUsageDO fullTokenUsageDO = new TokenUsageDO(completeResponse.tokenUsage().inputTokenCount(), completeResponse.tokenUsage().outputTokenCount());
                                                 session.setTokenUsageDO(fullTokenUsageDO);
@@ -106,6 +109,7 @@ public class AgentService {
                                                 task.setFinished(true);
                                         }
                                         case TOOL_EXECUTION -> {
+                                                apiService.doChat(session, handler);
                                         }
                                 }
                                 TokenUsage tokenUsage = completeResponse.tokenUsage();
@@ -117,7 +121,8 @@ public class AgentService {
                                 sse.sendEvent(sessionId, SSEName.CompleteResponse,
                                         new CompleteResponseDO(aiMessage.thinking(),
                                                 aiMessage.text(),
-                                                dOUtil.convertToDO(aiMessage.toolExecutionRequests())
+                                                dOUtil.convertToDO(aiMessage.toolExecutionRequests()),
+                                                dOUtil.convertToDO(finishReason)
                                         ));
 
                                 toolExecutionRequests.forEach(request -> {
@@ -162,7 +167,8 @@ public class AgentService {
                                         throw new RuntimeException(e);
                                 }
                         }
-                });
+                };
+                apiService.doChat(session, handler);
         }
 
 }

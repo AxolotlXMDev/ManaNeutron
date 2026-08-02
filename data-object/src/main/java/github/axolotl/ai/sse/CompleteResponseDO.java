@@ -13,4 +13,5 @@ public class CompleteResponseDO {
         String thinking;
         String response;
         List<ToolExecutionRequestDO> toolCalls;
+        FinishReasonDO  finishReason;
 }

@@ -9,6 +9,7 @@ import dev.langchain4j.model.chat.request.json.*;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiChatRequestParameters;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.model.openai.internal.chat.AssistantMessage;
 import dev.langchain4j.service.tool.DefaultToolExecutor;
@@ -72,9 +73,16 @@ public class AIAPIService {
         }
 
         private ChatRequest buildChatRequest(Session session) {
+                ModelChoice modelChoice = session.getInfo().getModelChoice();
+                OpenAiChatRequestParameters parameters = OpenAiChatRequestParameters.builder()
+                        .modelName(modelChoice.getModelId().getModelId())
+                        .reasoningEffort(modelChoice.getEffort().toString().toLowerCase())
+                        .build();
+
                 ChatRequest request = ChatRequest.builder()
                         .messages(buildChatMessages(session))
                         .toolSpecifications(getToolSpecifications())
+                        .parameters(parameters)
                         .build();
                 return request;
         }
